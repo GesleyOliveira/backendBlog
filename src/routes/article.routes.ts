@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { authMiddleware } from '../middlewares/auth.middleware';
+import { authMiddleware } from '../middleware/auth.middleware';
 import {
   createArticle,
   listArticles,
