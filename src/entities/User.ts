@@ -1,7 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Article } from './Article';
 
 @Entity('users')
 export class User {
+  @OneToMany(() => Article, (article) => article.author)
+  articles!: Article[];
+  
   @PrimaryGeneratedColumn()
   id!: number;
 
