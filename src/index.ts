@@ -3,6 +3,7 @@ import express from 'express';
 import 'reflect-metadata';
 import { AppDataSource } from './config/database';
 import userRoutes from './routes/user.routes';
+import articleRoutes from './routes/article.routes';
 
 const app = express();
 app.use(express.json());
@@ -18,3 +19,4 @@ AppDataSource.initialize()
 
 // ATENÇÃO: isso deve vir depois do `express.json()`
 app.use('/users', userRoutes);
+app.use('/articles', articleRoutes);
