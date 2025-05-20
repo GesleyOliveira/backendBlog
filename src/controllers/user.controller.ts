@@ -12,9 +12,31 @@ export const registerUser = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Preencha todos os campos.' });
   }
 
-  // Simulação de criação de usuário
-  return res.status(201).json({ message: 'Usuário registrado com sucesso.' });
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+
+    const existingUser = await userRepository.findOneBy({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email já cadastrado.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = userRepository.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    await userRepository.save(newUser);
+
+    return res.status(201).json({ message: 'Usuário registrado com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+    return res.status(500).json({ message: 'Erro interno do servidor.' });
+  }
 };
+
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
