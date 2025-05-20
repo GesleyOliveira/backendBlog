@@ -5,9 +5,13 @@ import { AppDataSource } from './config/database';
 import userRoutes from './routes/user.routes';
 import articleRoutes from './routes/article.routes';
 import path from 'path';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 AppDataSource.initialize()
