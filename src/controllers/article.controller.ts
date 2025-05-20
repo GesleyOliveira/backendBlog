@@ -30,15 +30,18 @@ export const createArticle = async (req: Request, res: Response) => {
 
 export const listArticles = async (_: Request, res: Response) => {
   try {
-    const articles = await AppDataSource.getRepository(Article).find({
+    const articleRepository = AppDataSource.getRepository(Article);
+    const articles = await articleRepository.find({
       relations: ['author'],
       order: { createdAt: 'DESC' },
     });
+
     return res.status(200).json(articles);
   } catch (error) {
     return res.status(500).json({ message: 'Erro ao buscar artigos.' });
   }
 };
+
 
 export const updateArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -46,11 +49,8 @@ export const updateArticle = async (req: Request, res: Response) => {
   const userId = (req.user as any).userId;
 
   try {
-    const articleRepository = AppDataSource.getRepository(Article);
-    const article = await articleRepository.findOne({
-      where: { id: Number(id) },
-      relations: ['author'],
-    });
+    const repo = AppDataSource.getRepository(Article);
+    const article = await repo.findOne({ where: { id: Number(id) }, relations: ['author'] });
 
     if (!article) return res.status(404).json({ message: 'Artigo não encontrado.' });
     if (article.author.id !== userId) return res.status(403).json({ message: 'Acesso negado.' });
@@ -59,30 +59,29 @@ export const updateArticle = async (req: Request, res: Response) => {
     article.content = content || article.content;
     if (req.file?.filename) article.coverImage = req.file.filename;
 
-    await articleRepository.save(article);
+    await repo.save(article);
     return res.status(200).json(article);
-  } catch (error) {
+  } catch (err) {
     return res.status(500).json({ message: 'Erro ao atualizar artigo.' });
   }
 };
+
 
 export const deleteArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = (req.user as any).userId;
 
   try {
-    const articleRepository = AppDataSource.getRepository(Article);
-    const article = await articleRepository.findOne({
-      where: { id: Number(id) },
-      relations: ['author'],
-    });
+    const repo = AppDataSource.getRepository(Article);
+    const article = await repo.findOne({ where: { id: Number(id) }, relations: ['author'] });
 
     if (!article) return res.status(404).json({ message: 'Artigo não encontrado.' });
     if (article.author.id !== userId) return res.status(403).json({ message: 'Acesso negado.' });
 
-    await articleRepository.remove(article);
+    await repo.remove(article);
     return res.status(204).send();
-  } catch (error) {
-    return res.status(500).json({ message: 'Erro ao excluir artigo.' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro ao remover artigo.' });
   }
 };
+

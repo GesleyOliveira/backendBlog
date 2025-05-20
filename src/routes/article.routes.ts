@@ -11,9 +11,17 @@ import {
 const router = Router();
 const upload = multer({ dest: 'uploads/' });
 
+//GET
 router.get('/', listArticles);
+router.get('/', listArticles);
+
+//POST
 router.post('/', authMiddleware, upload.single('coverImage'), createArticle);
+
+//PUT
 router.put('/:id', authMiddleware, upload.single('coverImage'), updateArticle);
+
+//DELETE
 router.delete('/:id', authMiddleware, deleteArticle);
 
 export default router;
