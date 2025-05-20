@@ -1,0 +1,20 @@
+// src/index.ts
+import express from 'express';
+import 'reflect-metadata';
+import { AppDataSource } from './config/database';
+import userRoutes from './routes/user.routes';
+
+const app = express();
+app.use(express.json());
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('✅ Conectado ao banco de dados');
+    app.listen(3000, () => {
+      console.log('🚀 Servidor rodando em http://localhost:3000');
+    });
+  })
+  .catch((error) => console.error('Erro ao conectar com o banco:', error));
+
+// ATENÇÃO: isso deve vir depois do `express.json()`
+app.use('/users', userRoutes);
