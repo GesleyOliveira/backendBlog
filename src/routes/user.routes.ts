@@ -5,5 +5,6 @@ const router = Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.put("/reset-password", resetPassword);
 
 export default router;

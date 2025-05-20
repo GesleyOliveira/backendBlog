@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { AppDataSource } from '../config/database';
 import { User } from '../entities/User';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -60,4 +60,35 @@ export const loginUser = async (req: Request, res: Response) => {
   );
 
   return res.status(200).json({ token });
+};
+
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { email, newPassword, confirmPassword } = req.body;
+
+  if (!email || !newPassword || !confirmPassword) {
+    return res.status(400).json({ message: "Preencha todos os campos." });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: "As senhas não coincidem." });
+  }
+
+  const userRepository = AppDataSource.getRepository(User);
+  const user = await userRepository.findOneBy({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "Usuário não encontrado." });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    await userRepository.save(user);
+
+    return res.status(200).json({ message: "Senha atualizada com sucesso." });
+  } catch {
+    return res.status(500).json({ message: "Erro ao atualizar a senha." });
+  }
 };
