@@ -17,7 +17,7 @@ export const createArticle = async (req: Request, res: Response) => {
     const article = articleRepository.create({
       title,
       content,
-      coverImage: req.file?.filename || null,
+      coverImage: req.file?.filename || undefined,
       author,
     });
 
