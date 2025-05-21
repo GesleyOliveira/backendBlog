@@ -9,8 +9,11 @@ export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Preencha todos os campos.' });
-  }
+  if (!name) return res.status(400).json({ message: 'Nome é obrigatório.' });
+  if (!email) return res.status(400).json({ message: 'E-mail é obrigatório.' });
+  if (!password) return res.status(400).json({ message: 'Senha é obrigatória.' });
+}
+
 
   try {
     const userRepository = AppDataSource.getRepository(User);

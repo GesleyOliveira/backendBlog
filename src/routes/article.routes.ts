@@ -14,6 +14,8 @@ const upload = multer({ dest: 'uploads/' });
 //GET
 router.get('/', listArticles);
 router.get('/', listArticles);
+router.get('/articles/:id', getArticleById);
+
 
 //POST
 router.post('/', authMiddleware, upload.single('coverImage'), createArticle);

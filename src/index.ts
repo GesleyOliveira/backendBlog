@@ -1,4 +1,3 @@
-// src/index.ts
 import express from 'express';
 import 'reflect-metadata';
 import { AppDataSource } from './config/database';

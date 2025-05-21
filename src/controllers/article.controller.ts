@@ -42,6 +42,21 @@ export const listArticles = async (_: Request, res: Response) => {
   }
 };
 
+export const getArticleById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const articleRepository = AppDataSource.getRepository(Article);
+    const article = await articleRepository.findOne({
+      where: { id: Number(id) },
+      relations: ['author'],
+    });
+
+    if (!article) return res.status(404).json({ message: 'Artigo não encontrado.' });
+    return res.status(200).json(article);
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao buscar artigo.' });
+  }
+};
 
 export const updateArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -66,7 +81,6 @@ export const updateArticle = async (req: Request, res: Response) => {
   }
 };
 
-
 export const deleteArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = (req.user as any).userId;
@@ -84,4 +98,3 @@ export const deleteArticle = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Erro ao remover artigo.' });
   }
 };
-
