@@ -57,12 +57,20 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 
   const token = jwt.sign(
-    { userId: user.id, email: user.email },
+    { id: user.id }, 
     process.env.JWT_SECRET as string,
     { expiresIn: '1h' }
   );
 
-  return res.status(200).json({ token });
+  return res.status(200).json({
+  token,
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  }
+});
+
 };
 
 
@@ -93,5 +101,26 @@ export const resetPassword = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Senha atualizada com sucesso." });
   } catch {
     return res.status(500).json({ message: "Erro ao atualizar a senha." });
+  }
+};
+
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+    const userId = (req.user as any).id;
+
+    const user = await userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'name', 'email'], 
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    return res.json(user);
+  } catch (error) {
+    console.error('Erro ao buscar perfil:', error);
+    return res.status(500).json({ message: 'Erro interno ao buscar perfil' });
   }
 };

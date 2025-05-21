@@ -52,11 +52,17 @@ export const getArticleById = async (req: Request, res: Response) => {
     });
 
     if (!article) return res.status(404).json({ message: 'Artigo não encontrado.' });
+
+    if (article.author) {
+      article.author.password = undefined as any;
+    }
+
     return res.status(200).json(article);
   } catch (error) {
     return res.status(500).json({ message: 'Erro ao buscar artigo.' });
   }
 };
+
 
 export const updateArticle = async (req: Request, res: Response) => {
   const { id } = req.params;

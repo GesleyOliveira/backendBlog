@@ -22,6 +22,6 @@ AppDataSource.initialize()
   })
   .catch((error) => console.error('Erro ao conectar com o banco:', error));
 
-// ATENÇÃO: isso deve vir depois do `express.json()`
+
 app.use('/users', userRoutes);
 app.use('/articles', articleRoutes);

@@ -4,6 +4,7 @@ import { authMiddleware } from '../middleware/auth.middleware';
 import {
   createArticle,
   listArticles,
+  getArticleById,
   updateArticle,
   deleteArticle,
 } from '../controllers/article.controller';
@@ -11,19 +12,17 @@ import {
 const router = Router();
 const upload = multer({ dest: 'uploads/' });
 
-//GET
+// GET
 router.get('/', listArticles);
-router.get('/', listArticles);
-router.get('/articles/:id', getArticleById);
+router.get('/:id', getArticleById);
 
-
-//POST
+// POST
 router.post('/', authMiddleware, upload.single('coverImage'), createArticle);
 
-//PUT
+// PUT
 router.put('/:id', authMiddleware, upload.single('coverImage'), updateArticle);
 
-//DELETE
+// DELETE
 router.delete('/:id', authMiddleware, deleteArticle);
 
 export default router;
