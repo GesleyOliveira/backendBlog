@@ -1,10 +1,10 @@
-import express from 'express';
-import 'reflect-metadata';
 import { AppDataSource } from './config/database';
 import userRoutes from './routes/user.routes';
 import articleRoutes from './routes/article.routes';
+import express from 'express';
 import path from 'path';
 import cors from 'cors';
+import 'reflect-metadata';
 
 const app = express();
 app.use(express.json());

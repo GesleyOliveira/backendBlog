@@ -76,7 +76,6 @@ export const loginUser = async (req: Request, res: Response) => {
 
 };
 
-
 export const resetPassword = async (req: Request, res: Response) => {
   const { email, newPassword, confirmPassword } = req.body;
 
