@@ -1,14 +1,21 @@
 import { Router } from 'express';
-import { registerUser, loginUser, resetPassword, getProfile } from '../controllers/user.controller';
+import { 
+    registerUser, 
+    loginUser, 
+    resetPassword, 
+    getProfile,
+    updateProfile 
+        } from '../controllers/user.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { updateProfile } from '../controllers/user.controller';
+import { upload } from '../config/multer';
+
 
 const router = Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.put('/reset-password', resetPassword);
-router.put('/update-profile', authMiddleware, updateProfile);
+router.put('/update-profile', authMiddleware, upload.single('avatar'), updateProfile);
 router.get('/profile', authMiddleware, getProfile);
 
 export default router;

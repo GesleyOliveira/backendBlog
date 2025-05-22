@@ -144,6 +144,10 @@ export const updateProfile = async (req: Request, res: Response) => {
     user.password = await bcrypt.hash(password, 10);
   }
 
+  if (req.file) {
+  user.avatar = req.file.filename;
+  }
+
   await userRepository.save(user);
 
   return res.status(200).json({ message: 'Perfil atualizado com sucesso.' });
