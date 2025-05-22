@@ -5,7 +5,7 @@ import { User } from '../entities/User';
 
 export const createArticle = async (req: Request, res: Response) => {
   const { title, content } = req.body;
-  const userId = (req.user as any).userId;
+  const userId = (req.user as any).id;
 
   try {
     const articleRepository = AppDataSource.getRepository(Article);
@@ -36,11 +36,19 @@ export const listArticles = async (_: Request, res: Response) => {
       order: { createdAt: 'DESC' },
     });
 
-    return res.status(200).json(articles);
+    const safeArticles = articles.map(article => {
+      if (article.author) {
+        delete (article.author as any).password;
+      }
+      return article;
+    });
+
+    return res.status(200).json(safeArticles);
   } catch (error) {
     return res.status(500).json({ message: 'Erro ao buscar artigos.' });
   }
 };
+
 
 export const getArticleById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -67,7 +75,7 @@ export const getArticleById = async (req: Request, res: Response) => {
 export const updateArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, content } = req.body;
-  const userId = (req.user as any).userId;
+  const userId = (req.user as any).id;
 
   try {
     const repo = AppDataSource.getRepository(Article);
@@ -89,7 +97,7 @@ export const updateArticle = async (req: Request, res: Response) => {
 
 export const deleteArticle = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const userId = (req.user as any).userId;
+  const userId = (req.user as any).id;
 
   try {
     const repo = AppDataSource.getRepository(Article);
@@ -106,7 +114,7 @@ export const deleteArticle = async (req: Request, res: Response) => {
 };
 
 export const getMyArticles = async (req: Request, res: Response) => {
-  const userId = (req.user as any).userId;
+  const userId = (req.user as any).id;
 
   try {
     const articleRepository = AppDataSource.getRepository(Article);
