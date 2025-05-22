@@ -124,3 +124,27 @@ export const getProfile = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Erro interno ao buscar perfil' });
   }
 };
+
+export const updateProfile = async (req: Request, res: Response) => {
+  const { name, surname, email, password } = req.body;
+  const userId = (req.user as any).id;
+
+  const userRepository = AppDataSource.getRepository(User);
+  const user = await userRepository.findOneBy({ id: userId });
+
+  if (!user) {
+    return res.status(404).json({ message: 'Usuário não encontrado.' });
+  }
+
+  user.name = name || user.name;
+  user.surname = surname || user.surname;
+  user.email = email || user.email;
+
+  if (password) {
+    user.password = await bcrypt.hash(password, 10);
+  }
+
+  await userRepository.save(user);
+
+  return res.status(200).json({ message: 'Perfil atualizado com sucesso.' });
+};

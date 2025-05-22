@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate",
+    "migration:run": "npm run typeorm -- migration:run"
   },
   "keywords": [],
   "author": "",
@@ -17,9 +20,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.0",
-    "mysql2": "^3.14.1",
-    "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.24"
+    "mysql2": "^3.14.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -27,8 +28,13 @@
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/multer": "^1.4.12",
-    "@types/node": "^22.15.20",
+    "@types/node": "^22.15.21",
+    "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typeorm": "^0.3.24",
+    "typeorm-ts-node-commonjs": "^0.3.20",
     "typescript": "^5.8.3"
   }
 }
