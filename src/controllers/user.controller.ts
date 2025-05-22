@@ -3,6 +3,7 @@ import { AppDataSource } from '../config/database';
 import { User } from '../entities/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -111,7 +112,7 @@ export const getProfile = async (req: Request, res: Response) => {
 
     const user = await userRepository.findOne({
       where: { id: userId },
-      select: ['id', 'name', 'email'], 
+      select: ['id', 'name', 'surname', 'email', 'avatar'], 
     });
 
     if (!user) {
@@ -143,12 +144,14 @@ export const updateProfile = async (req: Request, res: Response) => {
     user.password = await bcrypt.hash(password, 10);
   }
 
-  if (req.file) {
+   if (req.file?.filename) {
     user.avatar = req.file.filename;
   }
 
   await userRepository.save(user);
 
-  return res.status(200).json({ message: 'Perfil atualizado com sucesso.' });
+  return res.status(200).json({ message: 'Perfil atualizado com sucesso.',
+    avatar: user.avatar,
+   });
 };
 

@@ -7,22 +7,18 @@ import {
   getArticleById,
   updateArticle,
   deleteArticle,
+  getMyArticles,
 } from '../controllers/article.controller';
 
 const router = Router();
 const upload = multer({ dest: 'uploads/' });
 
-// GET
+
 router.get('/', listArticles);
 router.get('/:id', getArticleById);
-
-// POST
+router.get('/my-articles', authMiddleware, getMyArticles);
 router.post('/', authMiddleware, upload.single('coverImage'), createArticle);
-
-// PUT
 router.put('/:id', authMiddleware, upload.single('coverImage'), updateArticle);
-
-// DELETE
 router.delete('/:id', authMiddleware, deleteArticle);
 
 export default router;

@@ -104,3 +104,21 @@ export const deleteArticle = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Erro ao remover artigo.' });
   }
 };
+
+export const getMyArticles = async (req: Request, res: Response) => {
+  const userId = (req.user as any).userId;
+
+  try {
+    const articleRepository = AppDataSource.getRepository(Article);
+    const articles = await articleRepository.find({
+      where: { author: { id: userId } },
+      relations: ['author'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return res.status(200).json(articles);
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao buscar seus artigos.' });
+  }
+};
+
