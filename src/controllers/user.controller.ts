@@ -126,8 +126,8 @@ export const getProfile = async (req: Request, res: Response) => {
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { name, surname, email, password } = req.body;
   const userId = (req.user as any).id;
+  const { name, surname, password } = req.body;
 
   const userRepository = AppDataSource.getRepository(User);
   const user = await userRepository.findOneBy({ id: userId });
@@ -138,17 +138,17 @@ export const updateProfile = async (req: Request, res: Response) => {
 
   user.name = name || user.name;
   user.surname = surname || user.surname;
-  user.email = email || user.email;
 
   if (password) {
     user.password = await bcrypt.hash(password, 10);
   }
 
   if (req.file) {
-  user.avatar = req.file.filename;
+    user.avatar = req.file.filename;
   }
 
   await userRepository.save(user);
 
   return res.status(200).json({ message: 'Perfil atualizado com sucesso.' });
 };
+
